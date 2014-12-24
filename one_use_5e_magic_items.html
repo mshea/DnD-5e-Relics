@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<title>D&D 5e One Use Magic Items</title>
+<link rel="stylesheet" type="text/css" href="http://mikeshea.net/style.css">
+<style>
+a, #reload{
+color:#00f;
+text-decoration:none; 
+cursor:pointer
+}
+</style>
+<meta name="viewport" content="user-scalable=yes, width=device-width" />
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="5e_relics.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    var relics = getRelics(100);
+    $("div#itemlist").html("<ol><li>"+relics.join("<li>"));
+    $("#reload").bind("click",function(){
+        var relics = getRelics(100);
+        $("div#itemlist").html("<ol><li>"+relics.join("<li>"));
+    });
+});
+
+</script>
+<div class="container">
+<div class="article">
+<a name="items"></a>
+<h2>D&D 5e One Use Magic Items - <span id="reload">reroll</span></h2>
+<div id="itemlist"></div>
+</div>
+<div class="footer"></div>
+</div>
+
