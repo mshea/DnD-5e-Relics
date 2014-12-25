@@ -447,7 +447,7 @@ spells = [{"name":"Acid Splash","level":0,"casthigherflag":1,"dcflag":1,"attackf
 {"name":"Witch Bolt","level":1,"casthigherflag":1,"dcflag":0,"attackflag":1,"pagenumber":289},
 {"name":"Word of Recall","level":6,"casthigherflag":0,"dcflag":0,"attackflag":0,"pagenumber":289},
 {"name":"Wrathful Smite","level":1,"casthigherflag":0,"dcflag":0,"attackflag":0,"pagenumber":289},
-{"name":"Zone of Truth","level":2,"casthigherflag":0,"dcflag":0,"attackflag":0,"pagenumber":289}]
+{"name":"Zone of Truth","level":2,"casthigherflag":0,"dcflag":0,"attackflag":0,"pagenumber":289}];
 
 // data key = (spell name, spell level, can be cast higher, uses DC, uses attack)
 
@@ -474,26 +474,26 @@ function commaSeparateNumber(val){
 
 function returnSpellLevel(roll) {
 	if (roll < 10) {
-			return 0;
-        } else if (roll < 20) {
-			return 1;
-        } else if (roll < 40) {
-			return 2;
-        } else if (roll < 60) {
-			return 3;
-        } else if (roll < 80) {
-			return 4;
-        } else if (roll < 85) {
-			return 5;
-        } else if (roll < 90) {
-			return 6;
-        } else if (roll < 95) {
-			return 7;
-        } else if (roll < 98) {
-			return 8;
-        } else {
-			return 9;
-        }
+		return 0;
+    } else if (roll < 20) {
+		return 1;
+    } else if (roll < 40) {
+		return 2;
+    } else if (roll < 60) {
+		return 3;
+    } else if (roll < 80) {
+		return 4;
+    } else if (roll < 85) {
+		return 5;
+    } else if (roll < 90) {
+		return 6;
+    } else if (roll < 95) {
+		return 7;
+    } else if (roll < 98) {
+		return 8;
+    } else {
+		return 9;
+    }
 }
 
 function returnCost(level) {
@@ -555,6 +555,33 @@ function getSpell(){
 	return ({"spell":spell,"casterlevel":casterlevel,"cost":cost,"casterbonus":casterbonus,"casterDC":casterDC,"castatlevel":castatlevel});
 }
 
+function getSpell2(spellset) {
+	var spell = spellset[Math.floor(Math.random()*spellset.length)];
+}
+
+function buildSpellString(spelldata){
+	var spell = spelldata.spell;
+    output_string = spell.name;
+    output_string = output_string + " (";
+
+    if (spell.dcflag == 1 || spell.attackflag == 1 || spell.casthigherflag == 1) {
+        output_string = output_string + "caster level " + spelldata.casterlevel + ", ";
+    }
+    if (spell.casthigherflag == 1) {
+        output_string = output_string + "cast at level " + spelldata.castatlevel + ", ";
+    }
+    if (spell.dcflag == 1) {
+        output_string = output_string + "DC " + spelldata.casterDC + ", ";
+    }
+    if (spell.attackflag == 1) {
+        output_string = output_string + "spell attack +" + spelldata.casterbonus + ", ";
+    }
+    output_string = output_string + commaSeparateNumber(spelldata.cost) + " gp"
+    output_string = output_string + ", pg " + spell.pagenumber + ")";
+    output_string = output_string + ".";
+    return(output_string);
+}
+
 function getRelics(count) {
 	var output_string_list = [];
     for (var i=0;i<count;i++) {
@@ -564,31 +591,35 @@ function getRelics(count) {
         if(i % item.length == 0) {shuffle(item)};
 
         output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item[i % item.length] + " that casts ";
-
-        var spelldata = getSpell();
-        var spell = spelldata.spell;
-
-        output_string = output_string + spell.name;
-
-        output_string = output_string + " (";
-
-        if (spell.dcflag == 1 || spell.attackflag == 1 || spell.casthigherflag == 1) {
-            output_string = output_string + "caster level " + spelldata.casterlevel + ", ";
-        }
-        if (spell.casthigherflag == 1) {
-            output_string = output_string + "cast at level " + spelldata.castatlevel + ", ";
-        }
-        if (spell.dcflag == 1) {
-            output_string = output_string + "DC " + spelldata.casterDC + ", ";
-        }
-        if (spell.attackflag == 1) {
-            output_string = output_string + "spell attack +" + spelldata.casterbonus + ", ";
-        }
-
-        output_string = output_string + commaSeparateNumber(spelldata.cost) + " gp"
-        output_string = output_string + ", pg " + spell.pagenumber + ")";
-        output_string = output_string + ".";
+        var spellstring = buildSpellString(getSpell());
+        output_string = output_string + spellstring;
         output_string_list.push(output_string);
     }
     return(output_string_list);
+}
+
+function getOrderedRelics(){
+	spell_list = [];
+	localspelldata = spells;
+
+	for (var i = 1;i < =100;i++){
+		spelllevelodds = [
+			{"rollcap":10,"spelllevel":0},
+			{"rollcap":30,"spelllevel":1},
+			{"rollcap":45,"spelllevel":2},
+			{"rollcap":60,"spelllevel":3},
+			{"rollcap":80,"spelllevel":4},
+			{"rollcap":85,"spelllevel":5},
+			{"rollcap":90,"spelllevel":6},
+			{"rollcap":93,"spelllevel":7},
+			{"rollcap":96,"spelllevel":8},
+			{"rollcap":100,"spelllevel":9},
+			];
+		for (x in spelllevelodds) {
+			if (spelllevelodds[x].rollcap >= i){
+				getSpell2(returnSpellsByLevel(spelllevelodds[x].rollcap));
+				break;
+			}
+		}
+	}
 }
