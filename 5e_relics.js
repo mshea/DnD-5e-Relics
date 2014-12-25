@@ -556,7 +556,30 @@ function getSpell(){
 }
 
 function getSpell2(spellset) {
+	var casterroll = roll();
+	var spelllevel = spellset[0].level;
+	var casterlevel = (returnSpellLevel(casterroll)*2) + (casterroll % 2);
+	if (casterlevel <= spelllevel*2) {
+		casterlevel = spelllevel*2;
+	}
+
 	var spell = spellset[Math.floor(Math.random()*spellset.length)];
+    if (spell.dcflag == 1 || spell.attackflag == 1 || spell.casthigherflag == 1) {
+    	var cost = returnCost(casterlevel);
+    } else {
+    	var cost = returnCost(spelllevel*2);    	
+    }
+
+	var casterbonus = Math.floor((casterlevel / 3)) + 4;
+	var casterDC = casterbonus + 8;
+
+	if (casterlevel >= 11) {
+		var castatlevel = Math.floor(casterlevel/2);
+	} else {
+		var castatlevel = Math.ceil(casterlevel/2);		
+	}
+
+	return ({"spell":spell,"casterlevel":casterlevel,"cost":cost,"casterbonus":casterbonus,"casterDC":casterDC,"castatlevel":castatlevel});
 }
 
 function buildSpellString(spelldata){
@@ -599,25 +622,36 @@ function getRelics(count) {
 }
 
 function getOrderedRelics(){
+	var output_string_list = [];
 	spell_list = [];
-	localspelldata = spells;
+	var localspelldata = spells;
 	for (var i=1;i<=100;i++){
+        if(i % adjective.length == 0) {shuffle(adjective);}
+        if(i % origin.length == 0) {shuffle(origin);}
+        if(i % item.length == 0) {shuffle(item)};
+        var output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item[i % item.length] + " that casts ";
 		var spelllevelodds = [
 			{"rollcap":10,"spelllevel":0},
-			{"rollcap":30,"spelllevel":1},
-			{"rollcap":45,"spelllevel":2},
-			{"rollcap":60,"spelllevel":3},
-			{"rollcap":80,"spelllevel":4},
+			{"rollcap":25,"spelllevel":1},
+			{"rollcap":40,"spelllevel":2},
+			{"rollcap":55,"spelllevel":3},
+			{"rollcap":70,"spelllevel":4},
 			{"rollcap":85,"spelllevel":5},
 			{"rollcap":90,"spelllevel":6},
-			{"rollcap":93,"spelllevel":7},
-			{"rollcap":96,"spelllevel":8},
+			{"rollcap":95,"spelllevel":7},
+			{"rollcap":98,"spelllevel":8},
 			{"rollcap":100,"spelllevel":9}];
 		for (x in spelllevelodds) {
 			if (spelllevelodds[x].rollcap >= i){
-				getSpell2(returnSpellsByLevel(spelllevelodds[x].rollcap));
+				console.log(spelllevelodds[x].spelllevel);
+				var spellset = returnSpellsByLevel(localspelldata, spelllevelodds[x].spelllevel);
+				var spell = getSpell2(spellset);
+				var spellstring = buildSpellString(spell);
 				break;
 			}
 		}
+		output_string = output_string + spellstring;
+		output_string_list.push(output_string);
 	}
+	return(output_string_list);
 }

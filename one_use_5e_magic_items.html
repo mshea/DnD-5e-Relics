@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<title>D&D 5e One Use Magic Items</title>
+<title>D&D 5e Single-use Magic Items</title>
 <link rel="stylesheet" type="text/css" href="http://mikeshea.net/style.css">
 <style>
 a, #reload{
@@ -15,10 +15,10 @@ cursor:pointer
 
 <script type="text/javascript">
 $(document).ready(function() {
-    var relics = getRelics(100);
+    var relics = getOrderedRelics();
     $("div#itemlist").html("<ol><li>"+relics.join("<li>"));
     $("#reload").bind("click",function(){
-        var relics = getRelics(100);
+        var relics = getOrderedRelics();
         $("div#itemlist").html("<ol><li>"+relics.join("<li>"));
     });
 });
@@ -27,9 +27,8 @@ $(document).ready(function() {
 <div class="container">
 <div class="article">
 <a name="items"></a>
-<h2>D&D 5e One Use Magic Items - <span id="reload">reroll</span></h2>
+<h2>D&D 5e Single-use Magic Items - <span id="reload">reroll</span></h2>
 <div id="itemlist"></div>
 </div>
 <div class="footer"></div>
 </div>
-
