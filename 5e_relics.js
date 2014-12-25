@@ -601,9 +601,8 @@ function getRelics(count) {
 function getOrderedRelics(){
 	spell_list = [];
 	localspelldata = spells;
-
-	for (var i = 1;i < =100;i++){
-		spelllevelodds = [
+	for (var i=1;i<=100;i++){
+		var spelllevelodds = [
 			{"rollcap":10,"spelllevel":0},
 			{"rollcap":30,"spelllevel":1},
 			{"rollcap":45,"spelllevel":2},
@@ -613,8 +612,7 @@ function getOrderedRelics(){
 			{"rollcap":90,"spelllevel":6},
 			{"rollcap":93,"spelllevel":7},
 			{"rollcap":96,"spelllevel":8},
-			{"rollcap":100,"spelllevel":9},
-			];
+			{"rollcap":100,"spelllevel":9}];
 		for (x in spelllevelodds) {
 			if (spelllevelodds[x].rollcap >= i){
 				getSpell2(returnSpellsByLevel(spelllevelodds[x].rollcap));
