@@ -2,7 +2,7 @@
 <title>D&D 5e Single-use Magic Items</title>
 <link rel="stylesheet" type="text/css" href="http://mikeshea.net/style.css">
 <style>
-a, #reload{
+a, #ordered, #unordered{
 color:#00f;
 text-decoration:none; 
 cursor:pointer
@@ -17,8 +17,12 @@ cursor:pointer
 $(document).ready(function() {
     var relics = getOrderedRelics();
     $("div#itemlist").html("<ol><li>"+relics.join("<li>"));
-    $("#reload").bind("click",function(){
+    $("#ordered").bind("click",function(){
         var relics = getOrderedRelics();
+        $("div#itemlist").html("<ol><li>"+relics.join("<li>"));
+    });
+    $("#unordered").bind("click",function(){
+        var relics = getRelics(100);
         $("div#itemlist").html("<ol><li>"+relics.join("<li>"));
     });
 });
@@ -27,7 +31,8 @@ $(document).ready(function() {
 <div class="container">
 <div class="article">
 <a name="items"></a>
-<h2>D&D 5e Single-use Magic Items - <span id="reload">reroll</span></h2>
+<h2>D&D 5e Single-use Magic Items</h2>
+<p><span id="ordered">ordered by level range</span> | <span id="unordered">randomly distributed</span></p>
 <div id="itemlist"></div>
 </div>
 <div class="footer"></div>

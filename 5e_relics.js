@@ -613,7 +613,7 @@ function getRelics(count) {
         if(i % origin.length == 0) {shuffle(origin);}
         if(i % item.length == 0) {shuffle(item)};
 
-        output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item[i % item.length] + " that casts ";
+        var output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item[i % item.length] + " that casts ";
         var spellstring = buildSpellString(getSpell());
         output_string = output_string + spellstring;
         output_string_list.push(output_string);
