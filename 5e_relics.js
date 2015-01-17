@@ -449,7 +449,17 @@ spells = [{"name":"Acid Splash","level":0,"casthigherflag":1,"dcflag":1,"attackf
 {"name":"Wrathful Smite","level":1,"casthigherflag":0,"dcflag":0,"attackflag":0,"pagenumber":289},
 {"name":"Zone of Truth","level":2,"casthigherflag":0,"dcflag":0,"attackflag":0,"pagenumber":289}];
 
-// data key = (spell name, spell level, can be cast higher, uses DC, uses attack)
+var spelllevelodds = [
+{"rollcap":10,"spelllevel":0},
+{"rollcap":25,"spelllevel":1},
+{"rollcap":40,"spelllevel":2},
+{"rollcap":55,"spelllevel":3},
+{"rollcap":70,"spelllevel":4},
+{"rollcap":85,"spelllevel":5},
+{"rollcap":90,"spelllevel":6},
+{"rollcap":95,"spelllevel":7},
+{"rollcap":98,"spelllevel":8},
+{"rollcap":100,"spelllevel":9}];
 
 function shuffle(list){
     for(var j, x, k = list.length; k; j = Math.floor(Math.random() * k), x = list[--k],list[k] = list[j], list[j] = x);
@@ -473,27 +483,11 @@ function commaSeparateNumber(val){
 }
 
 function returnSpellLevel(roll) {
-	if (roll < 10) {
-		return 0;
-    } else if (roll < 20) {
-		return 1;
-    } else if (roll < 40) {
-		return 2;
-    } else if (roll < 60) {
-		return 3;
-    } else if (roll < 80) {
-		return 4;
-    } else if (roll < 85) {
-		return 5;
-    } else if (roll < 90) {
-		return 6;
-    } else if (roll < 95) {
-		return 7;
-    } else if (roll < 98) {
-		return 8;
-    } else {
-		return 9;
-    }
+	for (x in spelllevelodds) {
+		if (spelllevelodds[x].rollcap >= roll){
+			return(spelllevelodds[x].spelllevel);
+		}
+	}
 }
 
 function returnCost(level) {
@@ -513,49 +507,7 @@ function roll(){
 	return(Math.floor((Math.random() * 100) + 1));
 }
 
-function getSpell(){
-	var localspelllist = spells;
-	// Roll twice, once for the spell, once for the caster level
-	var spellroll = roll();
-	var casterroll = roll();
-
-	if (casterroll <= spellroll) {
-		casterroll = spellroll;
-	}
-
-	// Get the spell level
-
-	var spelllevel = returnSpellLevel(spellroll);
-	var casterlevel = (returnSpellLevel(casterroll)*2) + (casterroll % 2);
-	if (casterlevel <= 0) {casterlevel = 1;}
-	if (casterroll == 100) {casterlevel = 20;}
-
-	// Fetch the list of spells for that level
-	// Grab a spell from the list and slice it off the list
-
-	var spellset = returnSpellsByLevel(spells,spelllevel)
-	var spell = spellset[Math.floor(Math.random()*spellset.length)];
-    if (spell.dcflag == 1 || spell.attackflag == 1 || spell.casthigherflag == 1) {
-    	var cost = returnCost(casterlevel);
-    } else {
-    	var cost = returnCost(spelllevel*2);    	
-    }
-
-	var casterbonus = Math.floor((casterlevel / 3)) + 4;
-	var casterDC = casterbonus + 8;
-	//console.log("spell roll: " + spellroll + ", spell level: "+ spelllevel);
-	//console.log("caster roll: " + casterroll + ", caster level: "+ casterlevel);
-
-	if (casterlevel >= 11) {
-		var castatlevel = Math.floor(casterlevel/2);
-	} else {
-		var castatlevel = Math.ceil(casterlevel/2);		
-	}
-
-	return ({"spell":spell,"casterlevel":casterlevel,"cost":cost,"casterbonus":casterbonus,"casterDC":casterDC,"castatlevel":castatlevel});
-}
-
-function getSpell2(spellset) {
+function getSpell(spellset) {
 	var casterroll = roll();
 	var spelllevel = spellset[0].level;
 	var casterlevel = (returnSpellLevel(casterroll)*2) + (casterroll % 2);
@@ -588,70 +540,49 @@ function buildSpellString(spelldata){
     output_string = output_string + " (";
 
     if (spell.dcflag == 1 || spell.attackflag == 1 || spell.casthigherflag == 1) {
-        output_string = output_string + "caster level " + spelldata.casterlevel + ", ";
+        output_string = output_string + "caster level " + spelldata.casterlevel + "; ";
     }
     if (spell.casthigherflag == 1) {
-        output_string = output_string + "cast at level " + spelldata.castatlevel + ", ";
+        output_string = output_string + "cast at level " + spelldata.castatlevel + "; ";
     }
     if (spell.dcflag == 1) {
-        output_string = output_string + "DC " + spelldata.casterDC + ", ";
+        output_string = output_string + "DC " + spelldata.casterDC + "; ";
     }
     if (spell.attackflag == 1) {
-        output_string = output_string + "spell attack +" + spelldata.casterbonus + ", ";
+        output_string = output_string + "spell attack +" + spelldata.casterbonus + "; ";
     }
     output_string = output_string + commaSeparateNumber(spelldata.cost) + " gp"
-    output_string = output_string + ", pg " + spell.pagenumber + ")";
-    output_string = output_string + ".";
+    output_string = output_string + "; pg " + spell.pagenumber + ")";
     return(output_string);
 }
 
-function getRelics(count) {
+function getRelics(count, order) {
 	var output_string_list = [];
     for (var i=0;i<count;i++) {
-
         if(i % adjective.length == 0) {shuffle(adjective);}
         if(i % origin.length == 0) {shuffle(origin);}
         if(i % item.length == 0) {shuffle(item)};
-
         var output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item[i % item.length] + " that casts ";
-        var spellstring = buildSpellString(getSpell());
+        if (order == "ordered") {
+			for (x in spelllevelodds) {
+				if (spelllevelodds[x].rollcap >= i){
+					console.log(spelllevelodds[x].spelllevel);
+					var spellset = returnSpellsByLevel(spells, spelllevelodds[x].spelllevel);
+					var spell = getSpell(spellset);
+					var spellstring = buildSpellString(spell);
+					break;
+				}
+			}
+        } else {
+        	var spellroll = roll();
+        	var spelllevel = returnSpellLevel(spellroll);
+        	var spellset = returnSpellsByLevel(spells, spelllevel);
+			var spell = getSpell(spellset);
+        	var spellstring = buildSpellString(spell);
+        }
+
         output_string = output_string + spellstring;
         output_string_list.push(output_string);
     }
     return(output_string_list);
-}
-
-function getOrderedRelics(){
-	var output_string_list = [];
-	spell_list = [];
-	var localspelldata = spells;
-	for (var i=1;i<=100;i++){
-        if(i % adjective.length == 0) {shuffle(adjective);}
-        if(i % origin.length == 0) {shuffle(origin);}
-        if(i % item.length == 0) {shuffle(item)};
-        var output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item[i % item.length] + " that casts ";
-		var spelllevelodds = [
-			{"rollcap":10,"spelllevel":0},
-			{"rollcap":25,"spelllevel":1},
-			{"rollcap":40,"spelllevel":2},
-			{"rollcap":55,"spelllevel":3},
-			{"rollcap":70,"spelllevel":4},
-			{"rollcap":85,"spelllevel":5},
-			{"rollcap":90,"spelllevel":6},
-			{"rollcap":95,"spelllevel":7},
-			{"rollcap":98,"spelllevel":8},
-			{"rollcap":100,"spelllevel":9}];
-		for (x in spelllevelodds) {
-			if (spelllevelodds[x].rollcap >= i){
-				console.log(spelllevelodds[x].spelllevel);
-				var spellset = returnSpellsByLevel(localspelldata, spelllevelodds[x].spelllevel);
-				var spell = getSpell2(spellset);
-				var spellstring = buildSpellString(spell);
-				break;
-			}
-		}
-		output_string = output_string + spellstring;
-		output_string_list.push(output_string);
-	}
-	return(output_string_list);
 }

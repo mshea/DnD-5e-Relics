@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<title>F___ing Single-use Magic Items</title>
+<style>
+
+#rollagain, a {
+color:#00f;
+text-decoration:none; 
+cursor:pointer;
+}
+div.maintext {
+	font-size:2em;
+}
+
+p#relic::first-letter {
+	text-transform: lowercase;
+}
+
+div.disclaimer {
+	font-size:.8em;
+}
+
+body {
+	max-width:30em;
+	width:90%;
+	margin:auto;
+	font-family: Verdana, Geneva, sans-serif;
+}
+</style>
+<meta name="viewport" content="user-scalable=yes, width=device-width" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="5e_relics.js"></script>
+
+<script type="text/javascript">
+
+function getRelic(){
+    relic = getRelics(1,"unordered");
+    $("span#relic").replaceWith("<span id=\"relic\">"+relic[0]+"</span>");
+}
+
+$(document).ready(function() {
+	getRelic();
+    $("span#rollagain").bind("click",function(){
+    	getRelic();
+    });
+});
+
+</script>
+<div class="maintext">
+<p>Holy f___ing s___! I just looted a f___ing ...</p>
+
+<p id="relic"><span id="relic"></span>.</p>
+
+<p>That's bulls___! I want to <span id="rollagain">roll again</span>!</p>
+</div>
+<div class="disclaimer">
+<p>Built using the <a href="http://slyflourish.com/relics.html">single-use D&D 5e Magic Item generator</a>. Censored because my mom told me I swore too much on <a href="http://twitter.com/slyflourish">Twitter</a> even though I only swore in 0.664% of all my tweets. But she is my mom. Now go <a href="http://www.amazon.com/s/?_encoding=UTF8&camp=1789&creative=390957&field-keywords=dungeons%20and%20dragons%205th%20edition&linkCode=ur2&tag=slyflourish-20&url=search-alias%3Daps&linkId=3SLFP7YN2PCDXOBQ">buy some D&D s___ on Amazon.</p>
