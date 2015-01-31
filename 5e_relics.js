@@ -46,7 +46,7 @@ origin = [
 "shadow",
 "arcane"];
 
-item = [
+item_type = [
 "amulet",
 "arrowhead",
 "bell",
@@ -561,8 +561,8 @@ function getRelics(count, order) {
     for (var i=0;i<count;i++) {
         if(i % adjective.length == 0) {shuffle(adjective);}
         if(i % origin.length == 0) {shuffle(origin);}
-        if(i % item.length == 0) {shuffle(item)};
-        var output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item[i % item.length] + " that casts ";
+        if(i % item_type.length == 0) {shuffle(item_type)};
+        var output_string = adjective[i % adjective.length] + " " + origin[i % origin.length] + " " + item_type[i % item_type.length] + " that casts ";
         if (order == "ordered") {
 			for (x in spelllevelodds) {
 				if (spelllevelodds[x].rollcap >= i){
